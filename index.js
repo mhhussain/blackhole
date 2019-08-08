@@ -14,8 +14,8 @@ let health = {
 var qlock = 0;
 let q = [];
 
-// pingin
-let pingin = 0;
+// particlein
+let ptin = 0;
 
 // create consumer
 setInterval(() => {
@@ -39,7 +39,7 @@ setInterval(() => {
     // process q items
     if (qe.length > 0) {
         for (var i = qe.shift(); i != undefined; i = qe.shift()) {
-            axios.post(i.to, { letter: i.letter })
+            axios.post(i.to, { particle: i.particle })
                 .catch((err) => {
                     // need to log this
                     console.log(err);
@@ -64,8 +64,8 @@ app.get('/status/q', (req, res) => {
     res.json(q.length);
 });
 
-app.get('/status/pingin', (req, res) => {
-    res.json(pingin);
+app.get('/status/ptin', (req, res) => {
+    res.json(ptin);
 });
 
 // posts
@@ -75,13 +75,13 @@ app.post('/ping', (req, res) => {
         return;
     }
 
-    let { letter } = req.body;
-    if (!letter) {
+    let { particle } = req.body;
+    if (!particle) {
         res.status(400).send(new Error('missing particle object'));
         return;
     }
 
-    pingin++;
+    ptin++;
 
     // retrieve lock
     while (true) {
@@ -91,13 +91,13 @@ app.post('/ping', (req, res) => {
         }
     }
     q.push({
-        to: letter.back,
-        "letter": letter
+        to: particle.back,
+        "particle": particle
     });
     // release lock
     qlock--;
 
-    res.send(`ping recieved [${letter.correlationId}]`);
+    res.send(`particle recieved [${particle.correlationId}]`);
 });
 
 // kill and rez
