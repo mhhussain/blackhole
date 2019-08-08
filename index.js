@@ -71,13 +71,13 @@ app.get('/status/pingin', (req, res) => {
 // posts
 app.post('/ping', (req, res) => {
     if (health.status != 'listening') {
-        res.error('bad health status');
+        res.status(400).send(new Error('bad health status'));
         return;
     }
 
     let { letter } = req.body;
     if (!letter) {
-        res.error('missing particle object');
+        res.status(400).send(new Error('missing particle object'));
         return;
     }
 
