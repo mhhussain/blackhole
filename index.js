@@ -1,5 +1,6 @@
 let axios = require('axios');
 let e =  require('express');
+let moment = require('moment');
 
 let configs = require('./config');
 
@@ -12,10 +13,14 @@ let health = {
 
 // q setup
 var qlock = 0;
+var qc = 0;
 let q = [];
 
 // particlein
 let ptin = 0;
+
+// interval tracker
+let intervals = [];
 
 // create consumer
 setInterval(() => {
@@ -32,6 +37,7 @@ setInterval(() => {
     }
 
     let qe = Array.from(q);
+    qc += qe.length;
     q = [];
     // release lock
     qlock--;
@@ -47,6 +53,7 @@ setInterval(() => {
         }
     }
 
+    intervals.push({ time: moment.now(), qc });
 }, 1000);
 
 
@@ -66,6 +73,11 @@ app.get('/status/q', (req, res) => {
 
 app.get('/status/ptin', (req, res) => {
     res.json(ptin);
+});
+
+app.get('/status/latency', (req, res) => {
+    let int = intervals.splice(intervals.length-2);
+    res.json( `${(int[1].qc-int[0].qc) / ((int[1].time - int[0].time) / 1000.0)} particles per second` );
 });
 
 // posts
