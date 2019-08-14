@@ -20,6 +20,10 @@ function blackhole(h, app) {
         }
     
         this.ptin++;
+
+        /*process.stdout.clearLine();
+        process.stdout.cursorTo(0);
+        process.stdout.write(this.ptin.toString());*/
     
         res.json(data);
     });
