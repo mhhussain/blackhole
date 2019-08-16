@@ -8,17 +8,18 @@ function blackhole(h, app) {
     });
     
     app.post('/ping', (req, res) => {
+
         if (h.status() != 'listening') {
             res.status(400).send(new Error('bad health status'));
             return;
         }
     
-        let { data } = req.body;
+        let data  = req.body;
         if (!data) {
             res.status(400).send(new Error('missing particle object'));
             return;
         }
-    
+
         this.ptin++;
 
         /*process.stdout.clearLine();
